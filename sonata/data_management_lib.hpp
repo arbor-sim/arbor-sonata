@@ -100,7 +100,7 @@ private:
     }
 
     std::unordered_map<unsigned, unsigned> edge_to_source_of_target(unsigned target_pop) {
-        std::unordered_map <unsigned, unsigned> edge_to_source;
+        std::unordered_map<unsigned, unsigned> edge_to_source;
 
         for (auto edge_type: edge_types_.data()) {
             auto type = edge_type.second;

@@ -122,8 +122,6 @@ public:
                 }
             }
         }
-        //print_point();
-        //print_density();
     }
 
 
