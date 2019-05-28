@@ -520,4 +520,3 @@ void write_trace(const std::unordered_map<cell_member_type, trace_info>& trace,
         H5Fclose (file);
     }
 }
-
