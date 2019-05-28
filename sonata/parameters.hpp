@@ -72,7 +72,6 @@ struct sonata_params {
     spike_out_info spike_output;
     std::vector<probe_info> probes_info;
 
-
     sonata_params(network_params&& n,
                   sim_conditions&& s,
                   run_params&& r,
