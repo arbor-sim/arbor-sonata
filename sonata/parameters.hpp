@@ -219,6 +219,9 @@ sonata_params read_options(int argc, char** argv) {
     if (argc>2) {
         throw std::runtime_error("More than one command line option not permitted.");
     }
+    if (argc<2) {
+        throw std::runtime_error("Simulation configuration file required.");
+    }
 
     std::string sim_file = argv[1];
     std::cout << "Loading parameters from file: " << sim_file << "\n";
@@ -333,8 +336,8 @@ void write_spikes(std::vector<arb::spike>& spikes,
         }
     }
 
-    auto file = H5Fcreate (file_name.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
-    auto group = H5Gcreate (file, "spikes", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    auto file = H5Fcreate(file_name.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+    auto group = H5Gcreate(file, "spikes", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
     for (unsigned p = 0; p < pop_names.size(); p++) {
         if (spike_part[p+1] > spike_part[p]) {
@@ -355,10 +358,8 @@ void write_spikes(std::vector<arb::spike>& spikes,
             }
 
             auto space = H5Screate_simple(1, &size, NULL);
-            auto dset_gid = H5Dcreate(file, full_dset_gid_name.c_str(), H5T_NATIVE_INT, space, H5P_DEFAULT, H5P_DEFAULT,
-                                      H5P_DEFAULT);
-            auto dset_time = H5Dcreate(file, full_dset_time_name.c_str(), H5T_NATIVE_DOUBLE, space, H5P_DEFAULT,
-                                       H5P_DEFAULT, H5P_DEFAULT);
+            auto dset_gid = H5Dcreate(file, full_dset_gid_name.c_str(), H5T_NATIVE_INT, space, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+            auto dset_time = H5Dcreate(file, full_dset_time_name.c_str(), H5T_NATIVE_DOUBLE, space, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
             H5Dwrite(dset_gid, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, spike_gids);
             H5Dwrite(dset_time, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, spike_times);

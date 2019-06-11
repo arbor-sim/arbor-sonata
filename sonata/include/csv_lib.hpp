@@ -136,18 +136,24 @@ public:
                     }
                 }
             } else {
+                if (type.second.find("model_template") == type.second.end()) {
+                    throw sonata_exception("Model_template not found in node csv description");
+                }
+
                 if (type.second.find("dynamics_params") != type.second.end()) {
                     if (type.second["dynamics_params"] != "NULL") {
-                        point_params_.insert(
-                                {type.first,
-                                 std::move(read_dynamics_params_point(type.second["dynamics_params"]))});
-                    } else {
-                        if (type.second.find("model_template") != type.second.end()) {
-                            point_params_.insert({type.first, arb::mechanism_desc(type.second["model_template"])});
-                        } else {
-                            throw sonata_exception("Model_template not found in node csv description");
+                        auto mech = read_dynamics_params_point(type.second["dynamics_params"]);
+
+                        if (mech.name() != type.second["model_template"]) {
+                            throw sonata_exception("point mechanism in \'dynamics_params\' does not match \'model_template\'");
                         }
+
+                        point_params_.insert({type.first, std::move(mech)});
+                    } else {
+                        point_params_.insert({type.first, arb::mechanism_desc(type.second["model_template"])});
                     }
+                } else {
+                    point_params_.insert({type.first, arb::mechanism_desc(type.second["model_template"])});
                 }
             }
         }
