@@ -1,11 +1,11 @@
+#include "../gtest.h"
+
 #include <arbor/cable_cell.hpp>
 
-#include "hdf5_lib.hpp"
-#include "csv_lib.hpp"
-#include "data_management_lib.hpp"
-#include "sonata_exceptions.hpp"
-
-#include "../gtest.h"
+#include <sonata/hdf5_lib.hpp>
+#include <sonata/csv_lib.hpp>
+#include <sonata/data_management_lib.hpp>
+#include <sonata/sonata_exceptions.hpp>
 
 // pop_ext         n5
 //           ______|_______
@@ -18,6 +18,8 @@
 //          |      |       |
 //  pop_i:  |____> n4 <____|
 
+
+using namespace sonata;
 
 io_desc simple_input() {
     std::string datadir{DATADIR};

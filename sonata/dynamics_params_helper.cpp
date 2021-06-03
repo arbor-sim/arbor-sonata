@@ -2,10 +2,11 @@
 #include <fstream>
 #include <unordered_map>
 
-#include "include/json/json_params.hpp"
-#include "include/sonata_exceptions.hpp"
-#include "include/density_mech_helper.hpp"
+#include <sonata/json/json_params.hpp>
+#include <sonata/sonata_exceptions.hpp>
+#include <sonata/density_mech_helper.hpp>
 
+namespace sonata{
 arb::mechanism_desc read_dynamics_params_point(std::string fname) {
     std::ifstream f(fname);
 
@@ -112,4 +113,4 @@ std::unordered_map<std::string, variable_map> read_dynamics_params_density_overr
     }
     return var_overrides;
 }
-
+} // namespace sonata

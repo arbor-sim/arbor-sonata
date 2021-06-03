@@ -6,9 +6,12 @@
 
 #include <mpi.h>
 
-#define MPI_OR_THROW(fn, ...)\
-while (int r_ = fn(__VA_ARGS__)) throw sonata_exception("MPI error");
+#include <sonata/sonata_exceptions.hpp>
 
+#define MPI_OR_THROW(fn, ...)\
+while (int r_ = fn(__VA_ARGS__)) throw sonata::sonata_exception("MPI error");
+
+namespace sonata{
 int rank(MPI_Comm comm) {
     int r;
     MPI_OR_THROW(MPI_Comm_rank, comm, &r);
@@ -107,3 +110,4 @@ std::vector<T> gather_all(const std::vector<T>& values, MPI_Comm comm) {
 
     return buffer;
 }
+} // namespace sonata

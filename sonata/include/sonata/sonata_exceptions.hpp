@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 
+namespace sonata {
 namespace impl {
     inline void pprintf_(std::ostringstream& o, const char* s) {
         o << s;
@@ -51,4 +52,4 @@ struct sonata_dataset_exception: sonata_exception {
         sonata_exception(pprintf("Dataset \"{}\" accessed out of bounds between: {} and {}", name, i, j)) {}
 
 };
-
+} // namespace sonata

@@ -6,13 +6,13 @@
 
 #include <hdf5.h>
 
-#include "include/sonata_exceptions.hpp"
-#include "include/hdf5_lib.hpp"
+#include <sonata/sonata_exceptions.hpp>
+#include <sonata/hdf5_lib.hpp>
 
 #define MAX_NAME 1024
 
 ///h5_dataset methods
-
+namespace sonata {
 h5_dataset::h5_dataset(hid_t parent, std::string name): parent_id_(parent), name_(name) {
     auto id = H5Dopen(parent_id_, name_.c_str(), H5P_DEFAULT);
     hid_t dspace = H5Dget_space(id);
@@ -647,3 +647,4 @@ template std::vector<double> h5_wrapper::get<std::vector<double>>(std::string na
 
 template std::vector<int> h5_wrapper::get<std::vector<int>>(std::string) const;
 template std::vector<std::pair<int,int>> h5_wrapper::get<std::vector<std::pair<int,int>>>(std::string) const;
+} // namespace sonata

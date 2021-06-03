@@ -1,16 +1,19 @@
 #pragma once
 
+#include <vector>
+#include <string>
+#include <unordered_set>
+#include <set>
+
 #include <arbor/common_types.hpp>
 #include <arbor/cable_cell.hpp>
 #include <arbor/domain_decomposition.hpp>
 #include <arbor/recipe.hpp>
 
-#include <string>
-#include <unordered_set>
-#include <set>
+#include <sonata/sonata_exceptions.hpp>
+#include <sonata/common_structs.hpp>
 
-#include "sonata_exceptions.hpp"
-#include "common_structs.hpp"
+namespace sonata {
 
 using arb::cell_gid_type;
 using arb::cell_lid_type;
@@ -136,4 +139,4 @@ private:
     std::unordered_map<std::string, std::vector<cell_member_type>> probe_groups_;
 
 };
-
+} // namespace sonata

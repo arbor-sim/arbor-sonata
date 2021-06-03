@@ -1,6 +1,8 @@
 #include "../gtest.h"
 
-#include "dynamics_params_helper.hpp"
+#include <sonata/dynamics_params_helper.hpp>
+
+using namespace sonata;
 
 TEST(dynamics_params_helper, point_mech) {
     std::string datadir{DATADIR};

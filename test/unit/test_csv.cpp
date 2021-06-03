@@ -1,9 +1,11 @@
+#include "../gtest.h"
+
 #include <arbor/cable_cell.hpp>
 
-#include "csv_lib.hpp"
-#include "sonata_exceptions.hpp"
+#include <sonata/csv_lib.hpp>
+#include <sonata/sonata_exceptions.hpp>
 
-#include "../gtest.h"
+using namespace sonata;
 
 TEST(csv_file, constructor) {
     std::string datadir{DATADIR};

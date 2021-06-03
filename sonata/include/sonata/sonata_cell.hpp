@@ -20,9 +20,9 @@
 #include <arborenv/concurrency.hpp>
 #include <arborenv/gpu_env.hpp>
 
-#include "sonata_io.hpp"
-#include "data_management_lib.hpp"
-#include "sonata_cell.hpp"
+#include <sonata/sonata_io.hpp>
+#include <sonata/data_management_lib.hpp>
+#include <sonata/sonata_cell.hpp>
 
 #ifdef ARB_MPI_ENABLED
 #include <mpi.h>
@@ -36,6 +36,7 @@ using arb::cell_member_type;
 using arb::cell_kind;
 using arb::time_type;
 
+namespace sonata {
 // Generate a cell.
 arb::cable_cell dummy_cell(
         arb::morphology morph,
@@ -74,3 +75,4 @@ arb::cable_cell dummy_cell(
 
     return cell;
 }
+} // namespace sonata

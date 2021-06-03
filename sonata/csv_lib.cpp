@@ -1,13 +1,14 @@
-#include <arbor/common_types.hpp>
-#include <arbor/swcio.hpp>
-
 #include <string>
 #include <fstream>
 
-#include "include/sonata_exceptions.hpp"
-#include "include/density_mech_helper.hpp"
-#include "include/csv_lib.hpp"
+#include <arbor/common_types.hpp>
+#include <arbor/swcio.hpp>
 
+#include <sonata/sonata_exceptions.hpp>
+#include <sonata/density_mech_helper.hpp>
+#include <sonata/csv_lib.hpp>
+
+namespace sonata {
 csv_file::csv_file(std::string name, char delm) :
         filename(name), delimeter(delm) {
     std::ifstream file(name);
@@ -263,5 +264,4 @@ arb::mechanism_desc csv_edge_record::point_mech_desc(type_pop_id id) const {
     }
     throw sonata_exception("Requested CSV dynamics_params not available");
 }
-
-
+} // namespace sonata

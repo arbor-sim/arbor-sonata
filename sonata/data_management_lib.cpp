@@ -1,7 +1,11 @@
+#include <string>
+#include <vector>
+
 #include <arbor/version.hpp>
 #include <arbor/mechcat.hpp>
 
-#include "include/data_management_lib.hpp"
+#include <sonata/data_management_lib.hpp>
+
 #include "mpi_helper.hpp"
 
 using arb::cell_gid_type;
@@ -10,6 +14,7 @@ using arb::cell_size_type;
 using arb::cell_member_type;
 using arb::mlocation;
 
+namespace sonata {
 model_desc::model_desc(h5_record nodes,
                        h5_record edges,
                        csv_node_record node_types,
@@ -736,3 +741,4 @@ std::vector<trace_index_and_info> io_desc::get_probes(cell_gid_type gid) const {
 std::unordered_map<std::string, std::vector<cell_member_type>> io_desc::get_probe_groups() const {
     return probe_groups_;
 };
+} // namespace sonata
