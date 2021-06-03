@@ -6,9 +6,10 @@
 
 #include <hdf5.h>
 
-#include "json/json_params.hpp"
-#include "data_management_lib.hpp"
+#include <sonata/json/json_params.hpp>
+#include <sonata/data_management_lib.hpp>
 
+namespace sonata {
 using h5_file_handle = std::shared_ptr<h5_file>;
 
 struct network_params {
@@ -421,3 +422,4 @@ void write_trace(const std::unordered_map<cell_member_type, trace_info>& trace,
         }
     }
 }
+} // namespace sonata

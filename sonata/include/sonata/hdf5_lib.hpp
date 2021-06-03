@@ -6,6 +6,7 @@
 
 #include <hdf5.h>
 
+namespace sonata {
 /// Class for reading from hdf5 datasets
 /// Datasets are opened and closed every time they are read
 class h5_dataset {
@@ -264,3 +265,4 @@ private:
     // Map from population name to index in populations_
     std::unordered_map<std::string, unsigned> map_;
 };
+} // namespace sonata

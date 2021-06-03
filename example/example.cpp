@@ -18,9 +18,9 @@
 #include <arborenv/concurrency.hpp>
 #include <arborenv/gpu_env.hpp>
 
-#include "../sonata/include/sonata_io.hpp"
-#include "../sonata/include/sonata_recipe.hpp"
-#include "../sonata/include/sonata_cell.hpp"
+#include <sonata/sonata_io.hpp>
+#include <sonata/sonata_recipe.hpp>
+#include <sonata/sonata_cell.hpp>
 
 #ifdef ARB_MPI_ENABLED
 #include <mpi.h>
@@ -67,13 +67,13 @@ int main(int argc, char **argv)
         std::cout << "mpi:      " << (has_mpi(context)? "yes": "no") << "\n";
         std::cout << "ranks:    " << num_ranks(context) << "\n" << std::endl;
 
-        auto params = read_options(argc, argv);
+        auto params = sonata::read_options(argc, argv);
 
         arb::profile::meter_manager meters;
         meters.start(context);
 
         // Create an instance of our recipe.
-        sonata_recipe recipe(params);
+        sonata::sonata_recipe recipe(params);
 
         auto decomp = arb::partition_load_balance(recipe, context);
 
@@ -83,14 +83,14 @@ int main(int argc, char **argv)
         arb::simulation sim(recipe, decomp, context);
 
         // Set up the probes that will measure voltages in the cells.
-        std::unordered_map<cell_member_type, trace_info> traces;
+        std::unordered_map<cell_member_type, sonata::trace_info> traces;
         auto sched = arb::regular_schedule(0.1);
 
 
         for (unsigned gid = 0; gid < recipe.num_cells(); gid++) {
             auto pbs = recipe.get_probes_info(gid);
             for (auto p:pbs) {
-                trace_info t(p.info.is_voltage, p.info.loc);
+                sonata::trace_info t(p.info.is_voltage, p.info.loc);
                 traces[{gid, p.idx}] = t;
 
                 sim.add_sampler(arb::one_probe({gid, p.idx}), sched, arb::make_simple_sampler(traces[{gid, p.idx}].data));
@@ -120,7 +120,7 @@ int main(int argc, char **argv)
         // Write spikes to file
         if (root) {
             std::cout << "\n" << ns << " spikes generated \n";
-            write_spikes(recorded_spikes, params.spike_output.sort_by == "time", params.spike_output.file_name, recipe.get_pop_names(), recipe.get_pop_partitions());
+            sonata::write_spikes(recorded_spikes, params.spike_output.sort_by == "time", params.spike_output.file_name, recipe.get_pop_names(), recipe.get_pop_partitions());
         }
 
         // Write the samples to a json file.

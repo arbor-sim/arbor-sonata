@@ -7,6 +7,7 @@
 #include <arbor/morph/morphology.hpp>
 #include <arbor/cable_cell_param.hpp>
 
+namespace sonata {
 enum section_kind {
     soma,
     dend,
@@ -89,3 +90,4 @@ struct mech_groups {
         }
     }
 };
+} // namespace sonata

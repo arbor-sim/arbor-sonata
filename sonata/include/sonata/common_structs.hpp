@@ -1,14 +1,13 @@
 #pragma once
 
+#include <string>
+
 #include <arbor/common_types.hpp>
 #include <arbor/cable_cell.hpp>
 #include <arbor/simple_sampler.hpp>
 
-
-#include "csv_lib.hpp"
-#include "hdf5_lib.hpp"
-
-#include <string>
+#include <sonata/csv_lib.hpp>
+#include <sonata/hdf5_lib.hpp>
 
 using arb::cell_gid_type;
 using arb::cell_lid_type;
@@ -16,6 +15,7 @@ using arb::cell_size_type;
 using arb::cell_member_type;
 using arb::mlocation;
 
+namespace sonata {
 struct sim_conditions {
     double temp_c;
     double v_init;
@@ -37,8 +37,9 @@ struct probe_info {
 
     probe_info() {};
 
-    probe_info(std::string k, std::string pop, std::vector<unsigned> ids, unsigned sid, double spos, std::string file):
-    kind(k), population(pop), node_ids(ids), sec_id(sid), sec_pos(spos), file_name(file) {};
+    probe_info(std::string k, std::string pop, std::vector<unsigned> ids, unsigned sid, double spos,
+               std::string file) :
+            kind(k), population(pop), node_ids(ids), sec_id(sid), sec_pos(spos), file_name(file) {};
 };
 
 struct current_clamp_info {
@@ -62,15 +63,16 @@ struct current_clamp_desc {
     double delay;
     arb::mlocation stim_loc;
 
-    current_clamp_desc(double dur, double amp, double del, arb::mlocation loc):
-            duration(dur), amplitude(amp), delay(del), stim_loc(loc){}
+    current_clamp_desc(double dur, double amp, double del, arb::mlocation loc) :
+            duration(dur), amplitude(amp), delay(del), stim_loc(loc) {}
 };
 
 struct source_type {
     cell_lid_type segment;
     double position;
 
-    source_type(): segment(0), position(0) {}
+    source_type() : segment(0), position(0) {}
+
     source_type(cell_lid_type s, double p) : segment(s), position(p) {}
 };
 
@@ -101,22 +103,21 @@ struct trace_info {
 
     trace_info() {};
 
-    trace_info(bool v, arb::mlocation l): is_voltage(v), loc(l) {};
+    trace_info(bool v, arb::mlocation l) : is_voltage(v), loc(l) {};
 };
 
 struct trace_index_and_info {
     unsigned idx;
     trace_info info;
 
-    trace_index_and_info(unsigned idx, trace_info t): idx(idx), info(t) {};
+    trace_index_and_info(unsigned idx, trace_info t) : idx(idx), info(t) {};
 };
-
+} // namespace sonata
 
 namespace std {
-    template<> struct hash<source_type>
-    {
-        std::size_t operator()(const source_type& s) const noexcept
-        {
+    template<>
+    struct hash<sonata::source_type> {
+        std::size_t operator()(const sonata::source_type& s) const noexcept {
             std::size_t const h1(std::hash<unsigned>{}(s.segment));
             std::size_t const h2(std::hash<double>{}(s.position));
             return h1 ^ (h2 << 1);

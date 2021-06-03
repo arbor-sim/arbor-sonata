@@ -1,35 +1,38 @@
 #pragma once
 
-#include <arbor/common_types.hpp>
-#include <arbor/swcio.hpp>
-
 #include <string>
 #include <fstream>
 
-#include "density_mech_helper.hpp"
-#include "dynamics_params_helper.hpp"
+#include <arbor/common_types.hpp>
+#include <arbor/swcio.hpp>
 
+#include <sonata/density_mech_helper.hpp>
+#include <sonata/dynamics_params_helper.hpp>
+
+
+namespace sonata {
 struct type_pop_id {
     unsigned type_tag;
     std::string pop_name;
 
     type_pop_id(unsigned tag, std::string name) : type_tag(tag), pop_name(name){}
 };
-
-inline bool operator==(const type_pop_id& lhs, const type_pop_id& rhs) {
-    return lhs.type_tag == rhs.type_tag && lhs.pop_name == rhs.pop_name;
-}
+} // namespace sonata
 
 namespace std {
-    template<> struct hash<type_pop_id>
+template<> struct hash<sonata::type_pop_id>
+{
+    std::size_t operator()(const sonata::type_pop_id& t) const noexcept
     {
-        std::size_t operator()(const type_pop_id& t) const noexcept
-        {
-            std::size_t const h1(std::hash<unsigned>{}(t.type_tag));
-            std::size_t const h2(std::hash<std::string>{}(t.pop_name));
-            return h1 ^ (h2 << 1);
-        }
-    };
+        std::size_t const h1(std::hash<unsigned>{}(t.type_tag));
+        std::size_t const h2(std::hash<std::string>{}(t.pop_name));
+        return h1 ^ (h2 << 1);
+    }
+};
+}
+namespace sonata {
+inline bool operator==(const type_pop_id& lhs, const type_pop_id& rhs) {
+    return lhs.type_tag == rhs.type_tag && lhs.pop_name == rhs.pop_name;
 }
 
 class csv_file {
@@ -105,3 +108,4 @@ private:
     // Map from type_pop_id to point_mechanisms_desc
     std::unordered_map<type_pop_id, arb::mechanism_desc> point_params_;
 };
+} //namespace sonata

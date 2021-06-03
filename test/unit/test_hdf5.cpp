@@ -1,9 +1,9 @@
+#include "../gtest.h"
+
 #include <arbor/cable_cell.hpp>
 
-#include "hdf5_lib.hpp"
-#include "sonata_exceptions.hpp"
-
-#include "../gtest.h"
+#include <sonata/hdf5_lib.hpp>
+#include <sonata/sonata_exceptions.hpp>
 
 // pop_ext         n5
 //           ______|_______
@@ -15,6 +15,8 @@
 //          |      |       |
 //          |      |       |
 //  pop_i:  |____> n4 <____|
+
+using namespace sonata;
 
 TEST(hdf5_record, verify_nodes) {
     std::string datadir{DATADIR};

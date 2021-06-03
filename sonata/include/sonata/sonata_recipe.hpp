@@ -36,6 +36,7 @@ using arb::cell_member_type;
 using arb::cell_kind;
 using arb::time_type;
 
+namespace sonata {
 class sonata_recipe: public arb::recipe {
 public:
     sonata_recipe(sonata_params params):
@@ -177,3 +178,4 @@ private:
 
     cell_size_type num_cells_;
 };
+} // namespace sonata
