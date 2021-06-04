@@ -405,38 +405,19 @@ std::string h5_file::name() {
     return name_;
 }
 
+void print_group(std::ostream& out, const std::shared_ptr<h5_group>& group, int indent) {
+    for (const auto& g: group->groups_) {
+        out << std::string(indent, '\t') << g->name() << std::endl;
+        print_group(out, g, indent+1);
+    }
+    for (const auto& d: group->datasets_) {
+        out << std::string(indent, '\t') << d->name() << "(" << d->size() << ")" << std::endl;
+    }
+}
+
 void h5_file::print() {
     std::cout << top_group_->name() << std::endl;
-    for (auto g0: top_group_->groups_) {
-        std::cout << "\t" << g0->name() << std::endl;
-        for (auto g1: g0->groups_) {
-            std::cout << "\t\t" << g1->name() << std::endl;
-            for (auto g2: g1->groups_) {
-                std::cout << "\t\t\t" << g2->name() << std::endl;
-                for (auto g3: g2->groups_) {
-                    std::cout << "\t\t\t\t" << g3->name() << std::endl;
-                    for (auto g4: g3->groups_) {
-                        std::cout << "\t\t\t\t\t" << g4->name() << std::endl;
-                    }
-                    for (auto d4: g3->datasets_) {
-                        std::cout << "\t\t\t\t\t" << d4->name() << " " << d4->size() << std::endl;
-                    }
-                }
-                for (auto d3: g2->datasets_) {
-                    std::cout << "\t\t\t\t" << d3->name() << " " << d3->size() << std::endl;
-                }
-            }
-            for (auto d2: g1->datasets_) {
-                std::cout << "\t\t\t" << d2->name() << " " << d2->size() << std::endl;
-            }
-        }
-        for (auto d1: g0->datasets_) {
-            std::cout << "\t\t" << d1->name() << " " << d1->size() << std::endl;
-        }
-    }
-    for (auto d0: top_group_->datasets_) {
-        std::cout << "\t" << d0->name() << " " << d0->size() << std::endl;
-    }
+    print_group(std::cout, top_group_, 1);
 }
 
 
