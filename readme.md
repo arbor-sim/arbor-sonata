@@ -1,12 +1,17 @@
 # SONATA for Arbor
 
 ### Build the example and unit tests
+
 #### Clone and build the arbor library in the `install-arbor` directory
+
 ```
 $ cd install-arbor
 $ ./install-local.sh
 ```
+
 #### Generate unit test input (hdf5 files)
+
+Make sure you have `h5py` installed.
 ```
 $ cd test/unit/inputs
 $ python generate/gen_edges.py
@@ -15,6 +20,8 @@ $ python generate/gen_spikes.py
 ```
 
 #### Generate example input (hdf5 files)
+
+Make sure you have `h5py` installed.
 ```
 $ cd example/network
 $ python generate/gen_edges.py
@@ -22,7 +29,9 @@ $ python generate/gen_nodes.py
 $ cd ../inputs
 $ python generate/gen_spikes.py
 ```
+
 #### Enter the correct paths
+
 * The paths have to be hard coded (for now)
 * The following files need to be modified
   * example/circuit_config.json
@@ -33,6 +42,8 @@ $ python generate/gen_spikes.py
 
 
 #### Build the sonata library, unit tests and example
+
+Make sure you have an hdf5 development package installed, e.g. `libhdf5-dev`.
 ```
 $ mkdir build && cd build
 $ cmake .. -Darbor_DIR=../install-arbor/install/lib/cmake/arbor -DCMAKE_BUILD_TYPE=release
