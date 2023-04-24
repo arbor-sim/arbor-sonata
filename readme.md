@@ -35,7 +35,7 @@ $ python generate/gen_spikes.py
 #### Build the sonata library, unit tests and example
 ```
 $ mkdir build && cd build
-$ cmake .. -Darbor_DIR=/path/to/arbor-sonata/install-arbor/install/lib/cmake/arbor -DCMAKE_BUILD_TYPE=release
+$ cmake .. -Darbor_DIR=../install-arbor/install/lib/cmake/arbor -DCMAKE_BUILD_TYPE=release
 $ make
 ```
 

@@ -38,7 +38,8 @@ cmake_args="$cmake_args -DARB_WITH_GPU=$arb_with_gpu"
 cmake_args="$cmake_args -DARB_ARCH=$arb_arch"
 cmake_args="$cmake_args -DARB_VECTORIZE=$arb_vectorize"
 cmake_args="$cmake_args -DARB_WITH_PROFILING=OFF"
-msg "ARBOR: cmake $cmake_args"
+cmake_args="$cmake_args -DARB_USE_BUNDLED_LIBS=ON"
+msg "ARBOR: cmake $arb_repo_path $cmake_args"
 cmake "$arb_repo_path" $cmake_args >> "$out" 2>&1
 [ $? != 0 ] && exit_on_error "see ${out}"
 
