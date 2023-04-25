@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <any>
 
 #include <arbor/assert_macro.hpp>
 #include <arbor/common_types.hpp>
@@ -101,15 +102,15 @@ public:
         return model_desc_.get_cell_kind(gid);
     }
 
-    cell_size_type num_sources(cell_gid_type gid) const override {
-        std::lock_guard<std::mutex> l(mtx_);
-        return model_desc_.num_sources(gid);
-    }
+    // cell_size_type num_sources(cell_gid_type gid) const override {
+    //     std::lock_guard<std::mutex> l(mtx_);
+    //     return model_desc_.num_sources(gid);
+    // }
 
-    cell_size_type num_targets(cell_gid_type gid) const override {
-        std::lock_guard<std::mutex> l(mtx_);
-        return model_desc_.num_targets(gid);
-    }
+    // cell_size_type num_targets(cell_gid_type gid) const override {
+    //     std::lock_guard<std::mutex> l(mtx_);
+    //     return model_desc_.num_targets(gid);
+    // }
 
     std::vector<arb::cell_connection> connections_on(cell_gid_type gid) const override {
         std::vector<arb::cell_connection> conns;
@@ -147,7 +148,7 @@ public:
         return io_desc_.get_probe_groups();
     }
 
-    arb::util::any get_global_properties(cell_kind k) const override {
+    std::any get_global_properties(cell_kind k) const override {
         arb::cable_cell_global_properties gprop;
         gprop.default_parameters = arb::neuron_parameter_defaults;
         gprop.default_parameters.axial_resistivity = 100;

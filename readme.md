@@ -2,7 +2,9 @@
 
 ### Build the example and unit tests
 
-#### Clone and build the arbor library in the `install-arbor` directory
+#### Optional: Clone and build the arbor library in the `install-arbor` directory
+
+Have Arbor installed somewhere, e.g. /home/you/.local. Alternatively:
 
 ```
 $ cd install-arbor
@@ -39,14 +41,12 @@ $ python generate/gen_spikes.py
   * example/network/node_types.csv
   * example/simulation_config.json
 
-
-
 #### Build the sonata library, unit tests and example
 
 Make sure you have an hdf5 development package installed, e.g. `libhdf5-dev`.
 ```
 $ mkdir build && cd build
-$ cmake .. -Darbor_DIR=../install-arbor/install/lib/cmake/arbor -DCMAKE_BUILD_TYPE=release
+$ cmake .. -Darbor_DIR=/make/sure/is/abs/path/install-arbor/install/lib/cmake/arbor -DCMAKE_BUILD_TYPE=release
 $ make
 ```
 
