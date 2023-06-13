@@ -17,6 +17,7 @@
 
 #include <arborenv/concurrency.hpp>
 #include <arborenv/gpu_env.hpp>
+#include <arborenv/default_env.hpp>
 
 #include <sonata/sonata_io.hpp>
 #include <sonata/sonata_recipe.hpp>
@@ -80,7 +81,7 @@ int main(int argc, char **argv)
         recipe.build_local_maps(decomp);
 
         // Construct the model.
-        arb::simulation sim(recipe, decomp, context);
+        arb::simulation sim(recipe, context, decomp);
 
         // Set up the probes that will measure voltages in the cells.
         std::unordered_map<cell_member_type, sonata::trace_info> traces;

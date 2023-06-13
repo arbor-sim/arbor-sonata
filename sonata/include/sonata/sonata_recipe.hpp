@@ -60,7 +60,7 @@ public:
 
     void build_local_maps(const arb::domain_decomposition& decomp) {
         std::lock_guard<std::mutex> l(mtx_);
-        model_desc_.build_source_and_target_maps(decomp.groups);
+        model_desc_.build_source_and_target_maps(decomp.groups());
     }
 
     arb::util::unique_any get_cell_description(cell_gid_type gid) const override {
@@ -79,20 +79,20 @@ public:
                 src_types.push_back(std::make_pair(s, run_params_.threshold));
             }
 
-            auto cell = dummy_cell(morph, mechs, src_types, tgt_types);
+            auto decor = arb::decor();
 
             auto stims = io_desc_.get_current_clamps(gid);
             for (auto s: stims) {
                 arb::i_clamp stim(s.delay, s.duration, s.amplitude);
-                cell.place(s.stim_loc, stim);
+                decor.place(s.stim_loc, stim, "myclamp");
             }
 
-            return cell;
+            return dummy_cell(decor, morph, mechs, src_types, tgt_types);
         }
         else if (get_cell_kind(gid) == cell_kind::spike_source) {
             std::lock_guard<std::mutex> l(mtx_);
             std::vector<double> time_sequence = io_desc_.get_spikes(gid);
-            return arb::util::unique_any(arb::spike_source_cell{arb::explicit_schedule(time_sequence)});
+            return arb::util::unique_any(arb::spike_source_cell{"det@0",arb::explicit_schedule(time_sequence)});
         }
         return {};
     }

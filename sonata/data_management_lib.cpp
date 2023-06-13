@@ -12,6 +12,8 @@ using arb::cell_gid_type;
 using arb::cell_lid_type;
 using arb::cell_size_type;
 using arb::cell_member_type;
+using arb::cell_global_label_type;
+using arb::cell_local_label_type;
 using arb::mlocation;
 
 namespace sonata {
@@ -244,8 +246,8 @@ void model_desc::get_connections(cell_gid_type gid, std::vector<arb::cell_connec
                 auto src_id = edges_[edge_pop].get<std::vector<int>>("source_node_id", r2e.first, r2e.second);
 
                 // std::vector<cell_member_type> sources, targets;
-                std::vector<arb::cell_global_label_type> sources;
-                std::vector<arb::cell_local_label_type> targets;
+                std::vector<cell_global_label_type> sources;
+                std::vector<cell_local_label_type> targets;
 
                 for (unsigned s = 0; s < src_rng.size(); s++) {
                     auto source_gid = nodes_.globalize({source_pop_name, (cell_gid_type) src_id[s]});
@@ -260,7 +262,8 @@ void model_desc::get_connections(cell_gid_type gid, std::vector<arb::cell_connec
                     if (loc != source_maps_[source_gid].end()) {
                         if (*loc == src_rng[s]) {
                             unsigned index = loc - source_maps_[source_gid].begin();
-                            sources.emplace_back(source_gid, std::to_string(index));
+                            // TODO not sure about "detector"
+                            sources.emplace_back(source_gid, std::string{"detector@"} + std::to_string(index));
                         } else {
                             throw sonata_exception("source maps initialized incorrectly");
                         }
@@ -281,7 +284,8 @@ void model_desc::get_connections(cell_gid_type gid, std::vector<arb::cell_connec
                     if (loc != target_maps_[gid].end()) {
                         if ((*loc).second == edges_.globalize({edge_pop_name, (cell_gid_type) t})) {
                             unsigned index = loc - target_maps_[gid].begin();
-                            targets.emplace_back(std::to_string(index));
+                             // TODO not sure about "detector"
+                            targets.emplace_back(std::string{"detector@"} + std::to_string(index));
                         } else {
                             throw sonata_exception("target maps initialized incorrectly");
                         }

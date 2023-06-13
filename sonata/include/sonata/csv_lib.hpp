@@ -2,6 +2,7 @@
 
 #include <string>
 #include <fstream>
+#include <unordered_set>
 
 #include <arbor/common_types.hpp>
 #include <arborio/swcio.hpp>

@@ -4,6 +4,8 @@
 #include <vector>
 #include <numeric>
 
+#ifdef ARB_MPI_ENABLED
+
 #include <mpi.h>
 
 #include <sonata/sonata_exceptions.hpp>
@@ -111,3 +113,5 @@ std::vector<T> gather_all(const std::vector<T>& values, MPI_Comm comm) {
     return buffer;
 }
 } // namespace sonata
+
+#endif //ARB_MPI_ENABLED
