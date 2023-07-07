@@ -46,18 +46,18 @@ $ python generate/gen_spikes.py
 Make sure you have an hdf5 development package installed, e.g. `libhdf5-dev`.
 ```
 $ mkdir build && cd build
-$ cmake .. -Darbor_DIR=/make/sure/is/abs/path/install-arbor/install/lib/cmake/arbor -DCMAKE_BUILD_TYPE=release
+$ cmake .. -Darbor_DIR=/absolute/path/to/install-arbor/install/lib/cmake/arbor -DCMAKE_BUILD_TYPE=release
 $ make
 ```
 
 #### Run the unit tests
 ```
-$ ./bin/unit
+$ ./build/bin/unit
 ```
 
 #### Run the example
 ```
-$ ./bin/sonata-example ../example/simulation_config.json
+$ ./build/bin/example example/simulation_config.json
 ```
 ##### Expected outcome of running the example:
 * **2492** spikes generated
