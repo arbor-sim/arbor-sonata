@@ -60,7 +60,7 @@ dt = h5py.special_dtype(vlen=bytes)
 morph = g0.create_dataset("morphology", (1,), dtype='S100')
 
 for i in range(0,1):
-    morph[i] = np.string_("/home/abiakarn/git/arbor-sonata/test/unit/inputs/soma.swc")
+    morph[i] = np.string_("test/unit/inputs/soma.swc")
 
 ############################################################################
 

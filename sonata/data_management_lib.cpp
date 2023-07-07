@@ -199,7 +199,7 @@ arb::morphology model_desc::get_cell_morphology(cell_gid_type gid) {
 
             std::ifstream f(file);
             if (!f) throw sonata_exception("Unable to open SWC file");
-            return arb::morphology(arborio::load_swc_arbor(arborio::parse_swc(f)));
+            return arb::morphology(arborio::load_swc_neuron(arborio::parse_swc(f)));
         }
     }
     return node_types_.morph(type_pop_id(node_type_tag, node_pop_name));
@@ -262,8 +262,8 @@ void model_desc::get_connections(cell_gid_type gid, std::vector<arb::cell_connec
                     if (loc != source_maps_[source_gid].end()) {
                         if (*loc == src_rng[s]) {
                             unsigned index = loc - source_maps_[source_gid].begin();
-                            // TODO not sure about "detector"
-                            sources.emplace_back(source_gid, std::string{"detector@"} + std::to_string(index));
+                            // TODO not sure about "synapse"
+                            sources.emplace_back(source_gid, std::string{"synapse@"} + std::to_string(index));
                         } else {
                             throw sonata_exception("source maps initialized incorrectly");
                         }

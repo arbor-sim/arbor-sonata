@@ -13,7 +13,7 @@ $ ./install-local.sh
 
 #### Generate unit test input (hdf5 files)
 
-Make sure you have `h5py` installed.
+Make sure you have `h5py` installed. Make sure to delete existing files if regenerating, otherwise you seem to end with corrupted h5 files.
 ```
 $ cd test/unit/inputs
 $ python generate/gen_edges.py
@@ -23,7 +23,7 @@ $ python generate/gen_spikes.py
 
 #### Generate example input (hdf5 files)
 
-Make sure you have `h5py` installed.
+Make sure you have `h5py` installed. Make sure to delete existing files if regenerating, otherwise you seem to end with corrupted h5 files.
 ```
 $ cd example/network
 $ python generate/gen_edges.py

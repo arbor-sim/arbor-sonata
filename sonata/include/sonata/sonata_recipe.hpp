@@ -82,9 +82,11 @@ public:
             auto decor = arb::decor();
 
             auto stims = io_desc_.get_current_clamps(gid);
-            for (auto s: stims) {
+            // for (auto s: stims) {
+            for (int i=0; i < stims.size(); i++) {
+                auto s = stims[i];
                 arb::i_clamp stim(s.delay, s.duration, s.amplitude);
-                decor.place(s.stim_loc, stim, "myclamp");
+                decor.place(s.stim_loc, stim, std::string{"i_clamp"} + std::to_string(i));
             }
 
             return dummy_cell(decor, morph, mechs, src_types, tgt_types);
