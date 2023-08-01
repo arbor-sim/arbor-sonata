@@ -17,6 +17,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Get deps
         run: |
+          pwd
           sudo apt install libhdf5-dev
           pip install h5py
       - name: Build Arbor
@@ -39,7 +40,7 @@ jobs:
       - name: Build the sonata library, unit tests and example
         run: |
           mkdir build && cd build
-          cmake .. -Darbor_DIR=/home/runner/work/arbor/install-arbor/install/lib/cmake/arbor -DCMAKE_BUILD_TYPE=release
+          cmake .. -Darbor_DIR=/home/runner/work/arbor-sonata/install-arbor/install/lib/cmake/arbor -DCMAKE_BUILD_TYPE=release
           make -j2
       - name: Run unit test
         run: ./build/bin/unit
