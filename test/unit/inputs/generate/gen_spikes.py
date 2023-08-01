@@ -1,7 +1,7 @@
 import h5py
 
-f0 = h5py.File("spikes_0.h5", "a")
-f1 = h5py.File("spikes_1.h5", "a")
+f0 = h5py.File("spikes_0.h5", "w")
+f1 = h5py.File("spikes_1.h5", "w")
 
 spikes0 = f0.create_group("spikes")
 spikes1 = f1.create_group("spikes")
