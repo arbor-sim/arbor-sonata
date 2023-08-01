@@ -172,9 +172,9 @@ TEST(model_desc, connections) {
     md.get_connections(0, conns);
     EXPECT_EQ(1, conns.size());
     EXPECT_EQ(5,conns[0].source.gid);
-    EXPECT_EQ(0,conns[0].source.index);
-    EXPECT_EQ(0,conns[0].dest.gid);
-    EXPECT_EQ(0,conns[0].dest.index);
+    EXPECT_EQ("synapse@"+arb::cell_tag_type{"0"},conns[0].source.label.tag);
+    // EXPECT_EQ(0,conns[0].dest.gid);
+    EXPECT_EQ("detector@"+arb::cell_tag_type{"0"},conns[0].target.tag);
     EXPECT_NEAR(0.01,conns[0].weight,1e-5);
     EXPECT_NEAR(0.1,conns[0].delay,1e-5);
 
@@ -182,9 +182,9 @@ TEST(model_desc, connections) {
     md.get_connections(1, conns);
     EXPECT_EQ(1, conns.size());
     EXPECT_EQ(4,conns[0].source.gid);
-    EXPECT_EQ(0,conns[0].source.index);
-    EXPECT_EQ(1,conns[0].dest.gid);
-    EXPECT_EQ(0,conns[0].dest.index);
+    EXPECT_EQ("synapse@"+arb::cell_tag_type{"0"},conns[0].source.label.tag);
+    // EXPECT_EQ(1,conns[0].dest.gid);
+    EXPECT_EQ("detector@"+arb::cell_tag_type{"0"},conns[0].target.tag);
     EXPECT_NEAR(-0.02,conns[0].weight,1e-5);
     EXPECT_NEAR(0.1,conns[0].delay,1e-5);
 
@@ -192,9 +192,9 @@ TEST(model_desc, connections) {
     md.get_connections(2, conns);
     EXPECT_EQ(1, conns.size());
     EXPECT_EQ(5,conns[0].source.gid);
-    EXPECT_EQ(0,conns[0].source.index);
-    EXPECT_EQ(2,conns[0].dest.gid);
-    EXPECT_EQ(0,conns[0].dest.index);
+    EXPECT_EQ("synapse@"+arb::cell_tag_type{"0"},conns[0].source.label.tag);
+    // EXPECT_EQ(2,conns[0].dest.gid);
+    EXPECT_EQ("detector@"+arb::cell_tag_type{"0"},conns[0].target.tag);
     EXPECT_NEAR(0.01,conns[0].weight,1e-5);
     EXPECT_NEAR(0.1,conns[0].delay,1e-5);
 
@@ -202,9 +202,9 @@ TEST(model_desc, connections) {
     md.get_connections(3, conns);
     EXPECT_EQ(1, conns.size());
     EXPECT_EQ(1,conns[0].source.gid);
-    EXPECT_EQ(0,conns[0].source.index);
-    EXPECT_EQ(3,conns[0].dest.gid);
-    EXPECT_EQ(0,conns[0].dest.index);
+    EXPECT_EQ("synapse@"+arb::cell_tag_type{"0"},conns[0].source.label.tag);
+    // EXPECT_EQ(3,conns[0].dest.gid);
+    EXPECT_EQ("detector@"+arb::cell_tag_type{"0"},conns[0].target.tag);
     EXPECT_NEAR(0.05,conns[0].weight,1e-5);
     EXPECT_NEAR(0.2,conns[0].delay,1e-5);
 
@@ -212,16 +212,16 @@ TEST(model_desc, connections) {
     md.get_connections(4, conns);
     EXPECT_EQ(2, conns.size());
     EXPECT_EQ(0,conns[0].source.gid);
-    EXPECT_EQ(0,conns[0].source.index);
-    EXPECT_EQ(4,conns[0].dest.gid);
-    EXPECT_EQ(0,conns[0].dest.index);
+    EXPECT_EQ("synapse@"+arb::cell_tag_type{"0"},conns[0].source.label.tag);
+    // EXPECT_EQ(4,conns[0].dest.gid);
+    EXPECT_EQ("detector@"+arb::cell_tag_type{"0"},conns[0].target.tag);
     EXPECT_NEAR(0.0235,conns[0].weight,1e-5);
     EXPECT_NEAR(0.3,conns[0].delay,1e-5);
 
     EXPECT_EQ(2,conns[1].source.gid);
-    EXPECT_EQ(0,conns[1].source.index);
-    EXPECT_EQ(4,conns[1].dest.gid);
-    EXPECT_EQ(1,conns[1].dest.index);
+    EXPECT_EQ("synapse@"+arb::cell_tag_type{"0"},conns[1].source.label.tag);
+    // EXPECT_EQ(4,conns[1].dest.gid);
+    EXPECT_EQ("detector@"+arb::cell_tag_type{"1"},conns[1].target.tag);
     EXPECT_NEAR(0.04,conns[1].weight,1e-5);
     EXPECT_NEAR(0.3,conns[1].delay,1e-5);
 

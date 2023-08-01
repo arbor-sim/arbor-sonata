@@ -1,9 +1,9 @@
 import h5py
 import numpy as np
 
-f0 = h5py.File("nodes_0.h5", "a")
-f1 = h5py.File("nodes_1.h5", "a")
-f2 = h5py.File("nodes_2.h5", "a")
+f0 = h5py.File("nodes_0.h5", "w")
+f1 = h5py.File("nodes_1.h5", "w")
+f2 = h5py.File("nodes_2.h5", "w")
 
 nodes0 = f0.create_group('nodes')
 nodes1 = f1.create_group('nodes')
@@ -60,7 +60,7 @@ dt = h5py.special_dtype(vlen=bytes)
 morph = g0.create_dataset("morphology", (1,), dtype='S100')
 
 for i in range(0,1):
-    morph[i] = np.string_("/home/abiakarn/git/arbor-sonata/test/unit/inputs/soma.swc")
+    morph[i] = np.string_("test/unit/inputs/soma.swc")
 
 ############################################################################
 

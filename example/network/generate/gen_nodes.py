@@ -1,8 +1,8 @@
 import h5py
 
-f0 = h5py.File("nodes_0.h5", "a")
-f1 = h5py.File("nodes_1.h5", "a")
-f2 = h5py.File("nodes_ext.h5", "a")
+f0 = h5py.File("nodes_0.h5", "w")
+f1 = h5py.File("nodes_1.h5", "w")
+f2 = h5py.File("nodes_ext.h5", "w")
 
 nodes0 = f0.create_group('nodes')
 nodes1 = f1.create_group('nodes')

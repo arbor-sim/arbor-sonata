@@ -1,10 +1,10 @@
 import h5py
 
-f0 = h5py.File("edges_0.h5", "a")
-f1 = h5py.File("edges_1.h5", "a")
-f2 = h5py.File("edges_2.h5", "a")
-f3 = h5py.File("edges_3.h5", "a")
-f4 = h5py.File("edges_ext.h5", "a")
+f0 = h5py.File("edges_0.h5", "w")
+f1 = h5py.File("edges_1.h5", "w")
+f2 = h5py.File("edges_2.h5", "w")
+f3 = h5py.File("edges_3.h5", "w")
+f4 = h5py.File("edges_ext.h5", "w")
 
 edges0 = f0.create_group("edges")
 edges1 = f1.create_group("edges")

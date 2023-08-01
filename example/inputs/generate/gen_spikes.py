@@ -1,6 +1,6 @@
 import h5py
 
-f0 = h5py.File("input_spikes.h5", "a")
+f0 = h5py.File("input_spikes.h5", "w")
 
 spikes = f0.create_group("spikes")
 

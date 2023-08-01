@@ -1,0 +1,48 @@
+name: Arbor Sonata Runner
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+        python-version: ['3.10']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Get deps
+        run: |
+          pwd
+          sudo apt install libhdf5-dev libmpich-dev
+          pip install h5py
+      - name: Build Arbor
+        run: |
+          cd install-arbor
+          ./install-local.sh
+      - name: Generate unit test input files.
+        run: |
+          cd test/unit/inputs
+          python generate/gen_edges.py
+          python generate/gen_nodes.py
+          python generate/gen_spikes.py
+      - name: Generate example test input files.
+        run: |
+          cd example/network
+          python generate/gen_edges.py
+          python generate/gen_nodes.py
+          cd ../inputs
+          python generate/gen_spikes.py
+      - name: Build the sonata library, unit tests and example
+        run: |
+          mkdir build && cd build
+          cmake .. -Darbor_DIR=/home/runner/work/arbor-sonata/arbor-sonata/install-arbor/install/lib/cmake/arbor -DCMAKE_BUILD_TYPE=release
+          make -j2
+      - name: Run unit test
+        run: ./build/bin/unit
+      - name: Run the example
+        run: ./build/bin/example example/simulation_config.json

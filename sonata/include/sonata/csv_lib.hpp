@@ -2,9 +2,10 @@
 
 #include <string>
 #include <fstream>
+#include <unordered_set>
 
 #include <arbor/common_types.hpp>
-#include <arbor/swcio.hpp>
+#include <arborio/swcio.hpp>
 
 #include <sonata/density_mech_helper.hpp>
 #include <sonata/dynamics_params_helper.hpp>

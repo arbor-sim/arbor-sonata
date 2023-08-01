@@ -1,8 +1,9 @@
 #include <string>
 #include <fstream>
+#include <unordered_set>
 
 #include <arbor/common_types.hpp>
-#include <arbor/swcio.hpp>
+// #include <arbor/swcio.hpp>
 
 #include <sonata/sonata_exceptions.hpp>
 #include <sonata/density_mech_helper.hpp>
@@ -97,7 +98,7 @@ csv_node_record::csv_node_record(std::vector<csv_file> files) : csv_record(files
                 }
                 std::ifstream f(type.second["morphology"]);
                 if (!f) throw sonata_exception("Unable to open SWC file");
-                morphologies_[type.first] = arb::morphology(arb::swc_as_segment_tree(arb::parse_swc_file(f)));
+                morphologies_[type.first] = arb::morphology(arborio::load_swc_neuron(arborio::parse_swc(f)));
             } else {
                 throw sonata_exception("Morphology not found in node csv description");
             }

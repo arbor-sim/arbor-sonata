@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <any>
 
 #include <arbor/assert_macro.hpp>
 #include <arbor/common_types.hpp>
@@ -59,7 +60,7 @@ public:
 
     void build_local_maps(const arb::domain_decomposition& decomp) {
         std::lock_guard<std::mutex> l(mtx_);
-        model_desc_.build_source_and_target_maps(decomp.groups);
+        model_desc_.build_source_and_target_maps(decomp.groups());
     }
 
     arb::util::unique_any get_cell_description(cell_gid_type gid) const override {
@@ -78,20 +79,22 @@ public:
                 src_types.push_back(std::make_pair(s, run_params_.threshold));
             }
 
-            auto cell = dummy_cell(morph, mechs, src_types, tgt_types);
+            auto decor = arb::decor();
 
             auto stims = io_desc_.get_current_clamps(gid);
-            for (auto s: stims) {
+            // for (auto s: stims) {
+            for (int i=0; i < stims.size(); i++) {
+                auto s = stims[i];
                 arb::i_clamp stim(s.delay, s.duration, s.amplitude);
-                cell.place(s.stim_loc, stim);
+                decor.place(s.stim_loc, stim, std::string{"i_clamp"} + std::to_string(i));
             }
 
-            return cell;
+            return dummy_cell(decor, morph, mechs, src_types, tgt_types);
         }
         else if (get_cell_kind(gid) == cell_kind::spike_source) {
             std::lock_guard<std::mutex> l(mtx_);
             std::vector<double> time_sequence = io_desc_.get_spikes(gid);
-            return arb::util::unique_any(arb::spike_source_cell{arb::explicit_schedule(time_sequence)});
+            return arb::util::unique_any(arb::spike_source_cell{"det@0",arb::explicit_schedule(time_sequence)});
         }
         return {};
     }
@@ -101,15 +104,15 @@ public:
         return model_desc_.get_cell_kind(gid);
     }
 
-    cell_size_type num_sources(cell_gid_type gid) const override {
-        std::lock_guard<std::mutex> l(mtx_);
-        return model_desc_.num_sources(gid);
-    }
+    // cell_size_type num_sources(cell_gid_type gid) const override {
+    //     std::lock_guard<std::mutex> l(mtx_);
+    //     return model_desc_.num_sources(gid);
+    // }
 
-    cell_size_type num_targets(cell_gid_type gid) const override {
-        std::lock_guard<std::mutex> l(mtx_);
-        return model_desc_.num_targets(gid);
-    }
+    // cell_size_type num_targets(cell_gid_type gid) const override {
+    //     std::lock_guard<std::mutex> l(mtx_);
+    //     return model_desc_.num_targets(gid);
+    // }
 
     std::vector<arb::cell_connection> connections_on(cell_gid_type gid) const override {
         std::vector<arb::cell_connection> conns;
@@ -147,7 +150,7 @@ public:
         return io_desc_.get_probe_groups();
     }
 
-    arb::util::any get_global_properties(cell_kind k) const override {
+    std::any get_global_properties(cell_kind k) const override {
         arb::cable_cell_global_properties gprop;
         gprop.default_parameters = arb::neuron_parameter_defaults;
         gprop.default_parameters.axial_resistivity = 100;
