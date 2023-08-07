@@ -46,8 +46,7 @@ $ python generate/gen_spikes.py
 Make sure you have an hdf5 development package installed, e.g. `libhdf5-dev`.
 ```
 $ mkdir build && cd build
-$ cmake .. -Darbor_DIR=/absolute/path/to/install-arbor/install/lib/cmake/arbor -DCMAKE_BUILD_TYPE=release
-$ make
+$ cmake .. -Darbor_DIR=/absolute/path/to/install-arbor/install/lib/cmake/arbor -DCMAKE_BUILD_TYPE=release && make -j4
 ```
 
 #### Run the unit tests

@@ -39,6 +39,8 @@ cmake_args="$cmake_args -DARB_ARCH=$arb_arch"
 cmake_args="$cmake_args -DARB_VECTORIZE=$arb_vectorize"
 cmake_args="$cmake_args -DARB_WITH_PROFILING=OFF"
 cmake_args="$cmake_args -DARB_USE_BUNDLED_LIBS=ON"
+# cmake_args="$cmake_args -DARB_BACKTRACE=ON"
+# cmake_args="$cmake_args -DCMAKE_BUILD_TYPE=debug"
 msg "ARBOR: cmake $arb_repo_path $cmake_args"
 cmake "$arb_repo_path" $cmake_args >> "$out" 2>&1
 [ $? != 0 ] && exit_on_error "see ${out}"
