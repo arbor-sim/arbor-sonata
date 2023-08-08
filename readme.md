@@ -62,3 +62,30 @@ $ ./build/bin/example example/simulation_config.json
 * **2492** spikes generated
 * Output spikes report: `output_spikes.h5`
 * Voltage and current probe reports: `voltage_report.h5` and `current_report.h5`
+
+### Code org
+
+- `sonata/`
+  - contains the library, also libsonata.
+- `test/`
+  - Unit tests for libsonata
+- `example`
+  - contains an example application that uses libsonata, and an example Sonata simulation.
+  - The example simulation should be split from the application, which is really a Sonata simulation runner.
+
+### Developer notes
+
+- class `sonata_recipe`: public arb::recipe, in `sonata_recipe.hpp`
+  - takes `simulation_config.json` as arg
+  - main entry point to setting up a Sonata simulation, see `example.cpp`.
+
+- class `sonata_cell` -> arb::cable_cell, in `sonata_cell.hpp`
+  - not meant for direct use.
+
+- `example.cpp`
+  - An example Sonata simulation
+  - Since it takes `simulation_config.json` as input, it's probably not just an example but the main or even only user of libsonata / class `sonata_recipe`.
+
+- class `model_desc`, in `data_management_lib.hpp`
+  - member of `sonata_recipe`
+  - place where most parsing takes place.

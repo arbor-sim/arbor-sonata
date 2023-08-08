@@ -44,7 +44,7 @@ using namespace arborio::literals;
 
 namespace sonata {
 // Generate a cell.
-arb::cable_cell dummy_cell(
+arb::cable_cell sonata_cell(
         arb::decor dec,
         arb::morphology morph,
         std::unordered_map<section_kind, std::vector<arb::mechanism_desc>> mechs,

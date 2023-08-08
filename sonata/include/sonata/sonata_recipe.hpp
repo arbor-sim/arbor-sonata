@@ -89,7 +89,7 @@ public:
                 decor.place(s.stim_loc, stim, std::string{"i_clamp"} + std::to_string(i));
             }
 
-            return dummy_cell(decor, morph, mechs, src_types, tgt_types);
+            return sonata_cell(decor, morph, mechs, src_types, tgt_types);
         }
         else if (get_cell_kind(gid) == cell_kind::spike_source) {
             std::lock_guard<std::mutex> l(mtx_);
