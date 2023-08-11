@@ -1,6 +1,8 @@
-# SONATA for Arbor
+# SONATA for Arbor: ☕ Arbata
 
-### Build the example and unit tests
+This project builds ☕ Arbata: it executes Sonata models with the Arbor simulator. Point `arbata` at a ``simulation_config.json` and let us know what happened 😄.
+
+### Build the runner and unit tests
 
 #### Optional: Clone and build the arbor library in the `install-arbor` directory
 
@@ -56,7 +58,7 @@ $ ./build/bin/unit
 
 #### Run the example
 ```
-$ ./build/bin/example example/simulation_config.json
+$ ./build/bin/arbata example/simulation_config.json
 ```
 ##### Expected outcome of running the example:
 * **2492** spikes generated
@@ -69,23 +71,23 @@ $ ./build/bin/example example/simulation_config.json
   - contains the library, also libsonata.
 - `test/`
   - Unit tests for libsonata
-- `example`
-  - contains an example application that uses libsonata, and an example Sonata simulation.
-  - The example simulation should be split from the application, which is really a Sonata simulation runner.
+- `arbata/`
+  - contains the ☕ Arbata application.
+- `example/`
+  - contains an example Sonata simulation.
 
 ### Developer notes
 
 - class `sonata_recipe`: public arb::recipe, in `sonata_recipe.hpp`
-  - takes `simulation_config.json` as arg
+  - takes  as arg
   - main entry point to setting up a Sonata simulation, see `example.cpp`.
 
 - class `sonata_cell` -> arb::cable_cell, in `sonata_cell.hpp`
   - not meant for direct use.
 
-- `example.cpp`
-  - An example Sonata simulation
-  - Since it takes `simulation_config.json` as input, it's probably not just an example but the main or even only user of libsonata / class `sonata_recipe`.
-
 - class `model_desc`, in `data_management_lib.hpp`
   - member of `sonata_recipe`
   - place where most parsing takes place.
+
+- `arbata.cpp`
+  - An example user of libsonata and the end-user tool for Sonata-on-Arbor simulation.

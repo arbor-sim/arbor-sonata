@@ -40,6 +40,7 @@ using arb::time_type;
 namespace sonata {
 class sonata_recipe: public arb::recipe {
 public:
+    arb::cable_cell_global_properties gprop;
     sonata_recipe(sonata_params params):
             model_desc_(params.network.nodes,
                        params.network.edges,
@@ -52,7 +53,14 @@ public:
             run_params_(params.run),
             sim_cond_(params.conditions),
             probe_info_(params.probes_info),
-            num_cells_(model_desc_.num_cells()) {}
+            num_cells_(model_desc_.num_cells()) {
+                gprop.default_parameters = arb::neuron_parameter_defaults;
+                gprop.default_parameters.axial_resistivity = 100;
+                gprop.default_parameters.temperature_K = sim_cond_.temp_c + 273.15;
+                gprop.default_parameters.init_membrane_potential = sim_cond_.v_init;
+                gprop.default_parameters.reversal_potential_method["k"] = "nernst/k";
+                gprop.default_parameters.reversal_potential_method["na"] = "nernst/na";
+            }
 
     cell_size_type num_cells() const override {
         return num_cells_;
@@ -89,7 +97,7 @@ public:
                 decor.place(s.stim_loc, stim, std::string{"i_clamp"} + std::to_string(i));
             }
 
-            return sonata_cell(decor, morph, mechs, src_types, tgt_types);
+            return sonata_cell(gprop.catalogue, decor, morph, mechs, src_types, tgt_types);
         }
         else if (get_cell_kind(gid) == cell_kind::spike_source) {
             std::lock_guard<std::mutex> l(mtx_);
@@ -119,6 +127,10 @@ public:
 
         std::lock_guard<std::mutex> l(mtx_);
         model_desc_.get_connections(gid, conns);
+
+        for (const auto& conn : conns){
+            std::cout << gid << " " << conn.target.tag << " " << conn.source.label.tag << " " << conn.source.gid << " " << "\n";
+        }
 
         return conns;
     }
@@ -151,14 +163,6 @@ public:
     }
 
     std::any get_global_properties(cell_kind k) const override {
-        arb::cable_cell_global_properties gprop;
-        gprop.default_parameters = arb::neuron_parameter_defaults;
-        gprop.default_parameters.axial_resistivity = 100;
-        gprop.default_parameters.temperature_K = sim_cond_.temp_c + 273.15;
-        gprop.default_parameters.init_membrane_potential = sim_cond_.v_init;
-        gprop.default_parameters.reversal_potential_method["k"] = "nernst/k";
-        gprop.default_parameters.reversal_potential_method["na"] = "nernst/na";
-
         return gprop;
     }
 

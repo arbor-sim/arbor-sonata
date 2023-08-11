@@ -150,7 +150,6 @@ std::unordered_map<std::string, variable_map> csv_node_record::dynamic_params(ty
 
 std::unordered_map<section_kind, std::vector<arb::mechanism_desc>> csv_node_record::density_mech_desc(
         type_pop_id id, std::unordered_map<std::string, variable_map> overrides) {
-    std::unordered_map<section_kind, std::vector<arb::mechanism_desc>> ret;
 
     std::unordered_map<std::string, mech_groups> density_mechs = density_params_[id];
 
@@ -166,14 +165,12 @@ std::unordered_map<section_kind, std::vector<arb::mechanism_desc>> csv_node_reco
         }
     }
 
-    // For every mech_id
-    for (auto mech: density_mechs) {
-        auto mech_id = mech.first;
-        auto mech_gp = mech.second;
+    std::unordered_map<section_kind, std::vector<arb::mechanism_desc>> ret;
+    for (const auto& [mech_id,mech_gp]: density_mechs) {
+        auto desc = mech_gp;
+        desc.apply_variables();
 
-        mech_gp.apply_variables();
-
-        for (auto mech_instance: mech_gp.mech_details) {
+        for (auto mech_instance: desc.mech_details) {
             ret[mech_instance.section].push_back(mech_instance.mech);
         }
     }

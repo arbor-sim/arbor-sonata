@@ -22,4 +22,4 @@ install(TARGETS sonata-public-deps EXPORT sonata-targets)
 
 add_subdirectory(sonata)
 add_subdirectory(test)
-add_subdirectory(example)
+add_subdirectory(arbata)

@@ -17,14 +17,14 @@ enum section_kind {
 
 using variable_map = std::unordered_map<std::string, double>;
 
-// mech_param is a descrtiption of a mechanism `mech` and related attributes:
+// mech_param is a descrription of a mechanism `mech` and related attributes:
 // `section` is the name of the sections where `mech` is located (eg. soma, dend etc);
 // some of the parameters of `mech` aren't set yet because they aren't assigned a numerical value
 // instead, the parameters are assigned aliases, which they should get their numerical values from
-// these alieases are stored in `param_alias`
+// these aliases are stored in `param_alias`
 struct mech_params {
     section_kind section;
-    std::unordered_map<std::string, std::string> param_alias;     // Map from mechansim parameter to alias
+    std::unordered_map<std::string, std::string> param_alias;     // Map from mechanism parameter to alias
     arb::mechanism_desc mech;
 
     mech_params(std::string sec, std::unordered_map<std::string, std::string> map, arb::mechanism_desc full_mech) :

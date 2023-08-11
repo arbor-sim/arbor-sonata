@@ -44,7 +44,26 @@ using namespace arborio::literals;
 
 namespace sonata {
 // Generate a cell.
+
+arb::density fix_my_mech (const arb::mechanism_catalogue& cat, const arb::mechanism_desc& desc) {
+    std::string name = desc.name();
+    std::unordered_map<std::string, double> params;
+    const auto& info = cat[name];
+    std::string sep = "/";
+    for (const auto& [param, value]: desc.values()) {
+        if (info.globals.count(param)) {
+            name += sep + param + "=" + std::to_string(value);
+            sep = ",";
+        }
+        else {
+            params[param] = value;
+        }
+    }
+    return {name, std::move(params)};
+}
+
 arb::cable_cell sonata_cell(
+        const arb::mechanism_catalogue& cat,
         arb::decor dec,
         arb::morphology morph,
         std::unordered_map<section_kind, std::vector<arb::mechanism_desc>> mechs,
@@ -59,13 +78,13 @@ arb::cable_cell sonata_cell(
     ld.set("dend", join(tagged(3), tagged(4)));
 
     for (auto mech: mechs[section_kind::soma]) {
-        dec.paint("soma"_lab, arb::density(mech));
+        dec.paint("soma"_lab, fix_my_mech(cat,mech));
     }
     for (auto mech: mechs[section_kind::dend]) {
-        dec.paint("dend"_lab, arb::density(mech));
+        dec.paint("dend"_lab, fix_my_mech(cat,mech));
     }
     for (auto mech: mechs[section_kind::axon]) {
-        dec.paint("axon"_lab, arb::density(mech));
+        dec.paint("axon"_lab, fix_my_mech(cat,mech));
     }
 
     // Add spike threshold detector at the soma.
