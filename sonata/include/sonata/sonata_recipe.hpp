@@ -102,7 +102,7 @@ public:
         else if (get_cell_kind(gid) == cell_kind::spike_source) {
             std::lock_guard<std::mutex> l(mtx_);
             std::vector<double> time_sequence = io_desc_.get_spikes(gid);
-            return arb::util::unique_any(arb::spike_source_cell{"det@0",arb::explicit_schedule(time_sequence)});
+            return arb::util::unique_any(arb::spike_source_cell{"detector@0",arb::explicit_schedule(time_sequence)});
         }
         return {};
     }
@@ -111,16 +111,6 @@ public:
         std::lock_guard<std::mutex> l(mtx_);
         return model_desc_.get_cell_kind(gid);
     }
-
-    // cell_size_type num_sources(cell_gid_type gid) const override {
-    //     std::lock_guard<std::mutex> l(mtx_);
-    //     return model_desc_.num_sources(gid);
-    // }
-
-    // cell_size_type num_targets(cell_gid_type gid) const override {
-    //     std::lock_guard<std::mutex> l(mtx_);
-    //     return model_desc_.num_targets(gid);
-    // }
 
     std::vector<arb::cell_connection> connections_on(cell_gid_type gid) const override {
         std::vector<arb::cell_connection> conns;
