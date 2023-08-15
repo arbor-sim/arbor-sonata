@@ -118,10 +118,6 @@ public:
         std::lock_guard<std::mutex> l(mtx_);
         model_desc_.get_connections(gid, conns);
 
-        for (const auto& conn : conns){
-            std::cout << gid << " " << conn.target.tag << " " << conn.source.label.tag << " " << conn.source.gid << " " << "\n";
-        }
-
         return conns;
     }
 
