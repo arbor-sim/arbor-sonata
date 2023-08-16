@@ -262,8 +262,7 @@ void model_desc::get_connections(cell_gid_type gid, std::vector<arb::cell_connec
                     if (loc != source_maps_[source_gid].end()) {
                         if (*loc == src_rng[s]) {
                             unsigned index = loc - source_maps_[source_gid].begin();
-                            // TODO not sure about "synapse"
-                            sources.emplace_back(source_gid, std::string{"synapse@"} + std::to_string(index));
+                            sources.emplace_back(source_gid, std::string{"detector@"} + std::to_string(index));
                         } else {
                             throw sonata_exception("source maps initialized incorrectly");
                         }
@@ -284,8 +283,7 @@ void model_desc::get_connections(cell_gid_type gid, std::vector<arb::cell_connec
                     if (loc != target_maps_[gid].end()) {
                         if ((*loc).second == edges_.globalize({edge_pop_name, (cell_gid_type) t})) {
                             unsigned index = loc - target_maps_[gid].begin();
-                             // TODO not sure about "detector"
-                            targets.emplace_back(std::string{"detector@"} + std::to_string(index));
+                            targets.emplace_back(std::string{"synapse@"} + std::to_string(index));
                         } else {
                             throw sonata_exception("target maps initialized incorrectly");
                         }

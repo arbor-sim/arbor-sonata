@@ -134,8 +134,13 @@ int main(int argc, char **argv)
         std::cout << summary << "\n";
 
     }
+    catch (arb::arbor_exception& e) {
+        std::cerr << "Arbor exception caught in SONATA miniapp: " << e.what() << "\n";
+        std::cerr << "the error occured here: " << e.where << "\n";
+        return 1;
+    }
     catch (std::exception& e) {
-        std::cerr << "exception caught in SONATA miniapp: " << e.what() << "\n";
+        std::cerr << "runtime_error caught in SONATA miniapp: " << e.what() << "\n";
         return 1;
     }
     return 0;

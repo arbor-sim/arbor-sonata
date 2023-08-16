@@ -54,8 +54,7 @@ TEST(csv_node_record, constructor) {
 
     EXPECT_EQ(m0.num_branches(), m1.num_branches());
 
-    // EXPECT_TRUE(false) << m0.num_branches();
-    EXPECT_EQ(3, m0.num_branches()); //was 1. should be 2 looking at the swc/segment_tree. ???
+    EXPECT_EQ(3, m0.num_branches());
 
     EXPECT_THROW(r.morph(t2), sonata_exception);
 

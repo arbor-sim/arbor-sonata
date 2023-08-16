@@ -45,4 +45,4 @@ jobs:
       - name: Run unit test
         run: ./build/bin/unit
       - name: Run the example
-        run: ./build/bin/example example/simulation_config.json
+        run: ./build/bin/arbata example/simulation_config.json
