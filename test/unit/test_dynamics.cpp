@@ -29,42 +29,60 @@ TEST(dynamics_params_helper, density_mech) {
 
     auto pas_hh = read_dynamics_params_density_base(pas_hh_file);
 
+    // Check we found two correctly name mechanisms
     EXPECT_EQ(2, pas_hh.size());
-    EXPECT_TRUE(pas_hh.find("pas_0") != pas_hh.end());
-    EXPECT_TRUE(pas_hh.find("hh_0") != pas_hh.end());
+    EXPECT_TRUE(pas_hh.count("pas_0"));
+    EXPECT_TRUE(pas_hh.count("hh_0"));
 
-    auto pas_0_group = pas_hh.at("pas_0");
+    // Check the parameters are to spec
+    const auto& pas_0_group = pas_hh.at("pas_0");
     EXPECT_EQ(2, pas_0_group.variables.size());
 
-    EXPECT_TRUE(pas_0_group.variables.find("e_pas") !=  pas_0_group.variables.end());
-    EXPECT_TRUE(pas_0_group.variables.find("g_pas") !=  pas_0_group.variables.end());
+    EXPECT_TRUE(pas_0_group.variables.count("e_pas"));
+    EXPECT_TRUE(pas_0_group.variables.count("g_pas"));
 
     EXPECT_EQ(0.002, pas_0_group.variables.at("g_pas"));
     EXPECT_EQ(-70, pas_0_group.variables.at("e_pas"));
 
+    // Now recurse into the sub-sections
+    // First, look at pas
     auto pas_0_details = pas_0_group.mech_details;
     EXPECT_EQ(2, pas_0_details.size());
 
-    EXPECT_EQ(section_kind::soma, pas_0_details[0].section);
-    EXPECT_EQ(0, pas_0_details[0].param_alias.size());
-    EXPECT_EQ("pas", pas_0_details[0].mech.name());
-    EXPECT_EQ(2, pas_0_details[0].mech.values().size());
-    EXPECT_EQ(-65, pas_0_details[0].mech.values().at("e"));
-    EXPECT_EQ(0, pas_0_details[0].mech.values().at("g"));
+    auto pas_soma = std::find_if(pas_0_details.begin(), pas_0_details.end(),
+                                 [](const auto& d) { return d.section == section_kind::soma; });
+    EXPECT_NE(pas_soma, pas_0_details.end());
+    auto pas_dend = std::find_if(pas_0_details.begin(), pas_0_details.end(),
+                                 [](const auto& d) { return d.section == section_kind::dend; });
+    EXPECT_NE(pas_dend, pas_0_details.end());
 
-    EXPECT_EQ(section_kind::dend, pas_0_details[1].section);
-    EXPECT_EQ(1, pas_0_details[1].param_alias.size());
-    EXPECT_TRUE(pas_0_details[1].param_alias.find("e") != pas_0_details[1].param_alias.end());
-    EXPECT_EQ("e_pas", pas_0_details[1].param_alias.at("e"));
-    EXPECT_EQ("pas", pas_0_details[1].mech.name());
-    EXPECT_EQ(1, pas_0_details[1].mech.values().size());
-    EXPECT_EQ(0.001, pas_0_details[1].mech.values().at("g"));
+    EXPECT_EQ(section_kind::soma, pas_soma->section);
+    {
+        EXPECT_EQ("pas", pas_soma->mech.name());
+        EXPECT_EQ(0, pas_soma->param_alias.size());
+        const auto& values = pas_soma->mech.values();
+        EXPECT_EQ(2, values.size());
+        EXPECT_TRUE(values.count("e"));
+        EXPECT_TRUE(values.count("g"));
+        EXPECT_EQ(-65, values.at("e"));
+        EXPECT_EQ(0, values.at("g"));
+    }
 
+    EXPECT_EQ(section_kind::dend, pas_dend->section);
+    {
+        EXPECT_EQ(1, pas_dend->param_alias.size());
+        EXPECT_TRUE(pas_dend->param_alias.count("e"));
+        EXPECT_EQ("e_pas", pas_dend->param_alias.at("e"));
+        EXPECT_EQ("pas", pas_dend->mech.name());
+        EXPECT_EQ(1, pas_dend->mech.values().size());
+        EXPECT_EQ(0.001, pas_dend->mech.values().at("g"));
+    }
+    // then HH
     auto hh_0_group = pas_hh.at("hh_0");
     EXPECT_EQ(2, hh_0_group.variables.size());
 
-    EXPECT_TRUE(hh_0_group.variables.find("el_hh") !=  hh_0_group.variables.end());
-    EXPECT_TRUE(hh_0_group.variables.find("gl_hh") !=  hh_0_group.variables.end());
+    EXPECT_TRUE(hh_0_group.variables.count("el_hh"));
+    EXPECT_TRUE(hh_0_group.variables.count("gl_hh"));
 
     EXPECT_EQ(0.002, hh_0_group.variables.at("gl_hh"));
     EXPECT_EQ(-54, hh_0_group.variables.at("el_hh"));
@@ -72,14 +90,15 @@ TEST(dynamics_params_helper, density_mech) {
     auto hh_0_details = hh_0_group.mech_details;
     EXPECT_EQ(1, hh_0_details.size());
 
-    EXPECT_EQ(section_kind::soma, hh_0_details[0].section);
-    EXPECT_EQ(2, hh_0_details[0].param_alias.size());
-    EXPECT_TRUE(hh_0_details[0].param_alias.find("el") != hh_0_details[0].param_alias.end());
-    EXPECT_EQ("el_hh", hh_0_details[0].param_alias.at("el"));
-    EXPECT_TRUE(hh_0_details[0].param_alias.find("gl") != hh_0_details[0].param_alias.end());
-    EXPECT_EQ("gl_hh", hh_0_details[0].param_alias.at("gl"));
-    EXPECT_EQ("hh", hh_0_details[0].mech.name());
-    EXPECT_EQ(0, hh_0_details[0].mech.values().size());
+    auto hh_soma = hh_0_details[0];
+    EXPECT_EQ(section_kind::soma, hh_soma.section);
+    EXPECT_EQ(2, hh_soma.param_alias.size());
+    EXPECT_TRUE(hh_soma.param_alias.count("el"));
+    EXPECT_EQ("el_hh", hh_soma.param_alias.at("el"));
+    EXPECT_TRUE(hh_soma.param_alias.count("gl"));
+    EXPECT_EQ("gl_hh", hh_soma.param_alias.at("gl"));
+    EXPECT_EQ("hh", hh_soma.mech.name());
+    EXPECT_EQ(0, hh_soma.mech.values().size());
 }
 
 TEST(dynamics_params_helper, override_density_mech) {
