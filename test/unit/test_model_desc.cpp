@@ -269,27 +269,35 @@ TEST(model_desc, density_mechs) {
         EXPECT_EQ(2, mech_soma.size());
         EXPECT_EQ(1, mech_dend.size());
 
-        EXPECT_EQ("hh", mech_soma[0].name());
-        EXPECT_EQ("pas", mech_soma[1].name());
+        auto hh_soma = std::find_if(mech_soma.begin(), mech_soma.end(),
+                                    [](auto& m) { return m.name() == "hh"; });
+        auto pas_soma = std::find_if(mech_soma.begin(), mech_soma.end(),
+                                     [](auto& m) { return m.name() == "pas"; });
 
-        EXPECT_EQ("pas", mech_dend[0].name());
+        EXPECT_NE(hh_soma, mech_soma.end());
+        EXPECT_NE(pas_soma, mech_soma.end());
+
+        auto pas_dend = std::find_if(mech_dend.begin(), mech_dend.end(),
+                                     [](auto& m) { return m.name() == "pas"; });
+
+        EXPECT_NE(pas_dend, mech_dend.end());
 
         if (i < 4) {
-            EXPECT_NEAR(0.0003, mech_soma[0].values().at("gl"), 1e-5);
-            EXPECT_NEAR(-54.3, mech_soma[0].values().at("el"), 1e-5);
-            EXPECT_NEAR(0, mech_soma[1].values().at("g"), 1e-5);
-            EXPECT_NEAR(-65, mech_soma[1].values().at("e"), 1e-5);
+            EXPECT_NEAR(0.0003, hh_soma->values().at("gl"), 1e-5);
+            EXPECT_NEAR(-54.3, hh_soma->values().at("el"), 1e-5);
+            EXPECT_NEAR(0, pas_soma->values().at("g"), 1e-5);
+            EXPECT_NEAR(-65, pas_soma->values().at("e"), 1e-5);
 
-            EXPECT_NEAR(0.001, mech_dend[0].values().at("g"), 1e-5);
-            EXPECT_NEAR(-65.1, mech_dend[0].values().at("e"), 1e-5);
+            EXPECT_NEAR(0.001, pas_dend->values().at("g"), 1e-5);
+            EXPECT_NEAR(-65.1, pas_dend->values().at("e"), 1e-5);
         } else {
-            EXPECT_NEAR(0.003, mech_soma[0].values().at("gl"), 1e-5);
-            EXPECT_NEAR(-54, mech_soma[0].values().at("el"), 1e-5);
-            EXPECT_NEAR(0, mech_soma[1].values().at("g"), 1e-5);
-            EXPECT_NEAR(-65, mech_soma[1].values().at("e"), 1e-5);
+            EXPECT_NEAR(0.003, hh_soma->values().at("gl"), 1e-5);
+            EXPECT_NEAR(-54, hh_soma->values().at("el"), 1e-5);
+            EXPECT_NEAR(0, pas_soma->values().at("g"), 1e-5);
+            EXPECT_NEAR(-65, pas_soma->values().at("e"), 1e-5);
 
-            EXPECT_NEAR(0.001, mech_dend[0].values().at("g"), 1e-5);
-            EXPECT_NEAR(-65, mech_dend[0].values().at("e"), 1e-5);
+            EXPECT_NEAR(0.001, pas_dend->values().at("g"), 1e-5);
+            EXPECT_NEAR(-65, pas_dend->values().at("e"), 1e-5);
         }
     }
 
