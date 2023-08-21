@@ -18,7 +18,7 @@ target_include_directories(sonata-private-headers INTERFACE
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 
 target_include_directories(sonata PUBLIC ${HDF5_C_INCLUDE_DIRS})
-target_link_libraries(sonata PUBLIC sonata-public-headers arbor::arbor arbor::arborio arbor::arborenv ${HDF5_C_LIBRARIES})
+target_link_libraries(sonata PUBLIC sonata-public-headers sonata-public-deps arbor::arbor arbor::arborio arbor::arborenv ${HDF5_C_LIBRARIES})
 target_link_libraries(sonata PRIVATE sonata-private-deps arbor::arbor arbor::arborio arbor::arborenv ${HDF5_C_LIBRARIES})
 
 install(DIRECTORY include/sonata

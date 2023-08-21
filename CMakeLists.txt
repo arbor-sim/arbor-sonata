@@ -18,6 +18,7 @@ target_link_libraries(sonata-private-deps INTERFACE)
 install(TARGETS sonata-private-deps EXPORT sonata-targets)
 
 add_library(sonata-public-deps INTERFACE)
+target_include_directories(sonata-public-deps INTERFACE 3rd-party/json/include/)
 install(TARGETS sonata-public-deps EXPORT sonata-targets)
 
 add_subdirectory(sonata)
