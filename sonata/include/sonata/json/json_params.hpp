@@ -3,8 +3,10 @@
 #include <array>
 #include <exception>
 #include <optional>
+#include <string>
+#include <fstream>
 
-#include "json.hpp"
+#include <nlohmann/json.hpp>
 
 namespace sup {
 
@@ -37,6 +39,25 @@ void param_from_json(std::array<T, N>& x, const char* name, nlohmann::json& j) {
             throw std::runtime_error("parameter "+std::string(name)+" requires "+std::to_string(N)+" values");
         }
         std::copy(y.begin(), y.end(), x.begin());
+    }
+}
+
+inline
+nlohmann::json read_json_file(const std::string& fn) {
+    std::ifstream fd(fn);
+    if (!fd.good()) throw std::runtime_error("Unable to open input file: " + fn);
+    nlohmann::json json;
+    fd >> json;
+    return json;
+}
+
+template <typename T>
+T json_get_value(nlohmann::json& json, const std::string& k) {
+    if (!json.contains(k)) throw std::runtime_error("JSON missing required field: " + k);
+    try {
+        return json[k].get<T>();
+    } catch (nlohmann::json::type_error& e) {
+        throw std::runtime_error("Couldn't obtain field '" + k + "' due to type error: " + e.what());
     }
 }
 

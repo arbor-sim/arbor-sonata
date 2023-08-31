@@ -40,7 +40,7 @@ struct mech_params {
         }
     }
 
-    void print() {
+    void print() const {
         switch (section) {
             case section_kind::soma: std::cout << "soma" << std::endl; break;
             case section_kind::dend: std::cout << "dend" << std::endl; break;
@@ -67,7 +67,7 @@ struct mech_groups {
     mech_groups(std::unordered_map<std::string, double> vars, std::vector<mech_params> mech_det) :
             variables(std::move(vars)), mech_details(std::move(mech_det)) {}
 
-    void print() {
+    void print() const {
         for (auto i: variables) {
             std::cout << i.first << " " << i.second << std::endl;
         }

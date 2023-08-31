@@ -9,6 +9,8 @@
 #include <sonata/json/json_params.hpp>
 #include <sonata/data_management_lib.hpp>
 
+#include <arbor/spike.hpp>
+
 namespace sonata {
 using h5_file_handle = std::shared_ptr<h5_file>;
 
@@ -64,6 +66,7 @@ struct sonata_params {
     probes_info(std::move(probes)) {}
 };
 
+inline
 network_params read_network_params(nlohmann::json network_json) {
     using sup::param_from_json;
 
@@ -114,7 +117,13 @@ network_params read_network_params(nlohmann::json network_json) {
     return params_network;
 }
 
-sim_conditions read_sim_conditions(nlohmann::json condition_json) {
+inline
+sim_conditions read_sim_conditions(nlohmann::json json) {
+    if (!json.contains("run")) throw std::runtime_error("Simulation config doesn't contain require field 'conditions'.");
+    using sup::param_from_json;
+
+    auto condition_json = json["run"];
+
     using sup::param_from_json;
 
     sim_conditions conditions;
@@ -125,9 +134,12 @@ sim_conditions read_sim_conditions(nlohmann::json condition_json) {
     return conditions;
 }
 
-run_params read_run_params(nlohmann::json run_json) {
+inline
+run_params read_run_params(nlohmann::json json) {
+    if (!json.contains("run")) throw std::runtime_error("Simulation config doesn't contain require field 'run'.");
     using sup::param_from_json;
 
+    auto run_json = json["run"];
     run_params run;
 
     param_from_json(run.duration, "tstop", run_json);
@@ -137,6 +149,7 @@ run_params read_run_params(nlohmann::json run_json) {
     return run;
 }
 
+inline
 std::vector<current_clamp_info> read_clamps(std::unordered_map<std::string, nlohmann::json>& stim_json) {
     using sup::param_from_json;
     std::vector<current_clamp_info> ret;
@@ -151,6 +164,7 @@ std::vector<current_clamp_info> read_clamps(std::unordered_map<std::string, nloh
     return ret;
 }
 
+inline
 std::vector<spike_in_info> read_spikes(std::unordered_map<std::string, nlohmann::json>& spike_json, const nlohmann::json& node_set_json) {
     using sup::param_from_json;
     std::vector<spike_in_info> ret;
@@ -169,6 +183,7 @@ std::vector<spike_in_info> read_spikes(std::unordered_map<std::string, nlohmann:
     return ret;
 }
 
+inline
 std::vector<probe_info> read_probes(std::unordered_map<std::string, nlohmann::json>& reports_json, const nlohmann::json& node_set_json) {
     using sup::param_from_json;
     std::vector<probe_info> ret;
@@ -191,6 +206,7 @@ std::vector<probe_info> read_probes(std::unordered_map<std::string, nlohmann::js
     return ret;
 }
 
+inline
 sonata_params read_options(int argc, char** argv) {
     if (argc>2) {
         throw std::runtime_error("More than one command line option not permitted.");
@@ -201,86 +217,56 @@ sonata_params read_options(int argc, char** argv) {
 
     std::string sim_file = argv[1];
     std::cout << "Loading parameters from file: " << sim_file << "\n";
-    std::ifstream sim_config(sim_file);
-
-    if (!sim_config.good()) {
-        throw std::runtime_error("Unable to open input simulation config file: " + sim_file);
-    }
-
-    nlohmann::json sim_json;
-    sim_json << sim_config;
+    auto sim_json = sup::read_json_file(sim_file);
 
     /// Node_set_file
-    // Node set file name
-    auto node_set_name = sim_json.find("node_sets_file");
-    std::string node_set_file = *node_set_name;
-
-    nlohmann::json node_set_json;
-
-    std::ifstream node_set(node_set_file);
-    if (!node_set.good()) {
-        throw std::runtime_error("Unable to open node_set_file: "+ node_set_file);
-    }
-    node_set_json << node_set;
-
+    auto node_set_name = sup::json_get_value<std::string>(sim_json, "node_sets_file");
+    auto node_set_json = sup::read_json_file(node_set_name);
 
     /// Simulation Conditions
-    // Read simulation conditions
-    auto conditions_field = sim_json.find("conditions");
-    sim_conditions conditions(read_sim_conditions(*conditions_field));
+    auto conditions = read_sim_conditions(sim_json);
 
     /// Simulation Run parameters
-    // Read run parameters
-    auto run_field = sim_json.find("run");
-    run_params run(read_run_params(*run_field));
+    auto run_params = read_run_params(sim_json);
 
-    /// Network
-    // Read circuit_config file name from the "network" field
-    auto network_field = sim_json.find("network");
-    std::string network_file = *network_field;
-
-    // Open circuit_config
-    std::ifstream circuit_config(network_file);
-    if (!circuit_config.good()) {
-        throw std::runtime_error("Unable to open input circuit config file: "+ network_file);
-    }
-
-    nlohmann::json circuit_json;
-    circuit_json << circuit_config;
-
-    // Get json of network parameters
-    auto circuit_config_map = circuit_json.get<std::unordered_map<std::string, nlohmann::json>>();
+    /// Network from the "network" field
+    auto circuit_name = sup::json_get_value<std::string>(sim_json, "network");
+    auto circuit_conf = sup::read_json_file(circuit_name)
+        .get<std::unordered_map<std::string, nlohmann::json>>();
 
     // Read network parameters
-    network_params network(read_network_params(circuit_config_map["network"]));
+    auto network = read_network_params(circuit_conf["network"]);
 
     /// Inputs (stimuli)
-    // Get json of inputs
-    auto inputs_fields = sim_json["inputs"].get<std::unordered_map<std::string, nlohmann::json>>();
+    auto inputs_fields = sup::json_get_value<std::unordered_map<std::string, nlohmann::json>>(sim_json, "inputs");
 
     // Read stimulus parameters
     auto clamps = read_clamps(inputs_fields);
     auto spikes = read_spikes(inputs_fields, node_set_json);
 
     /// Outputs (spikes)
-    // Get json of outputs
-    auto output_field = sim_json["outputs"];
+    auto output_field =  sup::json_get_value<nlohmann::json>(sim_json, "outputs");
 
     // Read output parameters
-    spike_out_info output{output_field["spikes_file"], output_field["spikes_sort_order"]};
+    auto output = spike_out_info{sup::json_get_value<std::string>(output_field, "spikes_file"),
+                                 sup::json_get_value<std::string>(output_field, "spikes_sort_order")};
 
     /// Reports (probes)
-    // Get json of reports
-    auto reports_field = sim_json["reports"].get<std::unordered_map<std::string, nlohmann::json>>();
+    auto reports_field = sup::json_get_value<std::unordered_map<std::string, nlohmann::json>>(sim_json, "reports");
 
     // Read report(probe) parameters
     auto probes = read_probes(reports_field, node_set_json);
 
-    sonata_params params(std::move(network), std::move(conditions), std::move(run), std::move(clamps), std::move(spikes), std::move(output), std::move(probes));
-
-    return params;
+    return {std::move(network),
+            std::move(conditions),
+            std::move(run_params),
+            std::move(clamps),
+            std::move(spikes),
+            std::move(output),
+            std::move(probes)};
 }
 
+inline
 void write_spikes(std::vector<arb::spike>& spikes,
                   bool sort_by_time, std::string file_name,
                   const std::vector<std::string>& pop_names,
@@ -341,6 +327,7 @@ void write_spikes(std::vector<arb::spike>& spikes,
     }
 }
 
+inline
 void write_trace(const std::unordered_map<cell_member_type, trace_info>& trace,
                  const std::unordered_map<std::string, std::vector<cell_member_type>>& trace_groups,
                  const std::vector<std::string>& pop_names,

@@ -9,6 +9,8 @@ set(CMAKE_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_PREFIX}/include)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 find_package(arbor REQUIRED)
 find_package(MPI REQUIRED CXX)
 find_package(HDF5 REQUIRED)
@@ -18,6 +20,7 @@ target_link_libraries(sonata-private-deps INTERFACE)
 install(TARGETS sonata-private-deps EXPORT sonata-targets)
 
 add_library(sonata-public-deps INTERFACE)
+target_include_directories(sonata-public-deps INTERFACE 3rd-party/json/include/)
 install(TARGETS sonata-public-deps EXPORT sonata-targets)
 
 add_subdirectory(sonata)

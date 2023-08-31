@@ -1,5 +1,4 @@
 #include <iostream>
-#include <fstream>
 #include <unordered_map>
 
 #include <sonata/json/json_params.hpp>
@@ -8,14 +7,7 @@
 
 namespace sonata{
 arb::mechanism_desc read_dynamics_params_point(std::string fname) {
-    std::ifstream f(fname);
-
-    if (!f.good()) {
-        throw std::runtime_error("Unable to open input parameter file: "+fname);
-    }
-    nlohmann::json json;
-    json << f;
-
+    auto json = sup::read_json_file(fname);
     auto mechs = json.get<std::unordered_map<std::string, nlohmann::json>>();
 
     if (mechs.size() > 1) {
@@ -35,27 +27,18 @@ arb::mechanism_desc read_dynamics_params_point(std::string fname) {
 }
 
 std::unordered_map<std::string, mech_groups> read_dynamics_params_density_base(std::string fname) {
-    std::ifstream f(fname);
-
-    if (!f.good()) {
-        throw std::runtime_error("Unable to open input parameter file: "+fname);
-    }
-    nlohmann::json json;
-    json << f;
+    auto json = sup::read_json_file(fname);
 
     auto mech_definitions = json.get<std::unordered_map<std::string, nlohmann::json>>();
 
     std::unordered_map<std::string, mech_groups> mech_map;
 
-    for (auto mech_def: mech_definitions) {
-        std::string mech_id = mech_def.first; //key: eg. pas_0
+    for (const auto& [mech_id, mech_features]: mech_definitions) {
         std::unordered_map<std::string, double> variables; // key -value pairs, can be overwritten
         std::vector<mech_params> mech_details;
 
-        auto mech_features = mech_def.second;
-        for (auto params: mech_features) { //iterate through json
-
-            for (auto it = params.begin(); it != params.end(); it++) {
+        for (const auto& params: mech_features) { //iterate through json
+            for (auto it = params.begin(); it != params.end(); ++it) {
                 if(!it->is_structured()) {
                     variables[it.key()] = it.value();
                 } else {
@@ -72,18 +55,20 @@ std::unordered_map<std::string, mech_groups> read_dynamics_params_density_base(s
                             mech_name = (mech_it.value()).get<std::string>();
                         } else if ((*mech_it).type() == nlohmann::json::value_t::string) {
                             mech_aliases[mech_it.key()] = (mech_it.value()).get<std::string>();
-                        } else if ((*mech_it).type() == nlohmann::json::value_t::number_float ||
-                                   (*mech_it).type() == nlohmann::json::value_t::number_integer) {
+                        } else if (mech_it->type() == nlohmann::json::value_t::number_float
+                                || mech_it->type() == nlohmann::json::value_t::number_unsigned
+                                || mech_it->type() == nlohmann::json::value_t::number_integer) {
                             mech_params[mech_it.key()] = (mech_it.value()).get<double>();
+                        } else {
+                            throw std::runtime_error{"While reading mechanism parameters: No idea how to handle entry. id=" + mech_id
+                                                   + " key=" + mech_it.key()};
                         }
                     }
 
-                    auto base_mechanism = arb::mechanism_desc(mech_name);
-                    for (auto p: mech_params) {
-                        base_mechanism.set(p.first, p.second);
-                    }
+                    auto base = arb::mechanism_desc(mech_name);
+                    for (const auto& [k, v]: mech_params) base.set(k, v);
 
-                    mech_details.emplace_back(section_name, mech_aliases, base_mechanism);
+                    mech_details.emplace_back(section_name, mech_aliases, base);
                 }
             }
         }
@@ -93,14 +78,7 @@ std::unordered_map<std::string, mech_groups> read_dynamics_params_density_base(s
 }
 
 std::unordered_map<std::string, variable_map> read_dynamics_params_density_override(std::string fname) {
-    std::ifstream f(fname);
-
-    if (!f.good()) {
-        throw std::runtime_error("Unable to open input parameter file: "+fname);
-    }
-    nlohmann::json json;
-    json << f;
-
+    auto json = sup::read_json_file(fname);
     auto mech_overrides = json.get<std::unordered_map<std::string, nlohmann::json>>();
 
     std::unordered_map<std::string, variable_map> var_overrides;
