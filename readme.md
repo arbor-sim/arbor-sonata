@@ -1,6 +1,6 @@
 # SONATA for Arbor: ☕ Arbata
 
-This project builds ☕ Arbata: it executes Sonata models with the Arbor simulator. Point `arbata` at a ``simulation_config.json` and let us know what happened 😄.
+This project builds ☕ Arbata: it executes Sonata models with the Arbor simulator. Point `arbata` at a `simulation_config.json` and let us know what happened 😄.
 
 ### Build the runner and unit tests
 
